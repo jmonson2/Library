@@ -2,8 +2,8 @@ import shutil
 import os
 import logging
 from typing import Literal
-
 from tui import book_tui
+from db import init_db
 
 os.makedirs(name=os.path.dirname("logs/"), exist_ok=True)
 running = True
@@ -27,6 +27,7 @@ def cli() -> Literal[0]:
 
 
 def print_header() -> None:
+    _ = os.system(command="clear")
     term_size: os.terminal_size = shutil.get_terminal_size(fallback=(80, 20))
     print("".center(term_size.columns, '-'))
     print("LIBRARY CLI".center(term_size.columns))
@@ -36,10 +37,17 @@ def print_header() -> None:
 
 
 def print_main_dir() -> None:
+    if not init_db.exists_database():
+        _ = input("DATABASE NOT FOUND, INITIALIZING DATABASE. PRESS ENTER TO CONTINUE")
+        if not init_db.create_database():
+            _ = input("DATABASE COULD NOT BE CREATED. SHUTTING DOWN")
+            global running
+            running = False
+            return
     dir_list: list[str] = ["BOOKS", "EXIT"]
     dir_dict: dict[str, str] = {}
-# Converting into a dictionary so that we can add new directories
-# without having to change indexes for navigation logic
+    # Converting into a dictionary so that we can add new directories
+    # without having to change indexes for navigation logic
     for i in range(0, len(dir_list)):
         dir_dict.update({str(i + 1): dir_list[i]})
     print_header()
@@ -51,8 +59,7 @@ def print_main_dir() -> None:
         dir_resolver(dir_dict, user_input=dir)
     except ValueError as e:
         logger.error(msg=repr(e))
-        print("INVALID INPUT. PRESS ENTER TO CONTINUE.")
-        _ = input()
+        _ = input("INVALID INPUT. PRESS ENTER TO CONTINUE.")
         _ = cli()
 
 
