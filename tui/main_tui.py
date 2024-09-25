@@ -1,11 +1,11 @@
 import shutil
 import os
 import logging
+from typing import Literal
 
-from db import book_db
-from tui import user_tui, book_tui
+from tui import book_tui
 
-os.makedirs(os.path.dirname("logs/"), exist_ok=True)
+os.makedirs(name=os.path.dirname("logs/"), exist_ok=True)
 running = True
 logging.basicConfig(
     filename="logs/library.log",
@@ -15,19 +15,19 @@ logging.basicConfig(
     style="{",
     datefmt="%Y-%m-%d %H:%M",
     level=logging.DEBUG)
-logger = logging.getLogger(__name__)
+logger: logging.Logger = logging.getLogger(name=__name__)
 
 
-def cli(argv=None):
+def cli() -> Literal[0]:
     while running:
-        os.system("clear")
+        _ = os.system(command="clear")
         print_main_dir()
-        os.system("clear")
-    exit(0)
+        _ = os.system(command="clear")
+    return 0
 
 
-def print_header():
-    term_size = shutil.get_terminal_size((80, 20))
+def print_header() -> None:
+    term_size: os.terminal_size = shutil.get_terminal_size(fallback=(80, 20))
     print("".center(term_size.columns, '-'))
     print("LIBRARY CLI".center(term_size.columns))
     print("".center(term_size.columns, '-'))
@@ -35,9 +35,9 @@ def print_header():
     print()
 
 
-def print_main_dir():
-    dir_list = ["BOOKS", "EXIT"]
-    dir_dict = {}
+def print_main_dir() -> None:
+    dir_list: list[str] = ["BOOKS", "EXIT"]
+    dir_dict: dict[str, str] = {}
 # Converting into a dictionary so that we can add new directories
 # without having to change indexes for navigation logic
     for i in range(0, len(dir_list)):
@@ -46,23 +46,23 @@ def print_main_dir():
     for i in range(1, len(dir_dict) + 1):
         print(f"{i}. {dir_dict.get(str(i))}")
     try:
-        dir = input()
-        logger.debug(f"User input in main dir: {dir}")
-        dir_resolver(dir_dict, dir)
+        dir: str = input()
+        logger.debug(msg=f"User input in main dir: {dir}")
+        dir_resolver(dir_dict, user_input=dir)
     except ValueError as e:
-        logger.error(repr(e))
+        logger.error(msg=repr(e))
         print("INVALID INPUT. PRESS ENTER TO CONTINUE.")
-        input()
-        cli()
+        _ = input()
+        _ = cli()
 
 
-def dir_resolver(dir_dict, user_input):
+def dir_resolver(dir_dict:dict[str, str], user_input: str) -> None:
     if dir_dict.get(user_input) == "BOOKS":
-        logger.debug("User entering book dir.")
+        logger.debug(msg="User entering book dir.")
         book_tui.print_book_dir()
     elif dir_dict.get(user_input) == "EXIT":
-        logger.info("User exiting system.")
-        os.system("clear")
+        logger.info(msg="User exiting system.")
+        _ = os.system(command="clear")
         global running
         running = False
         return
@@ -70,4 +70,4 @@ def dir_resolver(dir_dict, user_input):
         raise ValueError(f"Invalid Input Detected: {dir}")
 
 
-cli()
+_ = cli()
