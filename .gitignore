@@ -3,3 +3,4 @@
 logs
 .vscode/launch.json
 sqlite/library.db
+*.venv

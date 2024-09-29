@@ -112,7 +112,7 @@ def get_book_by_title(title : str) -> list[Book] | None:
         cur: sqlite3.Cursor = con.execute(sql)
         results: list[str] = cur.fetchall()
         for result in results:
-            books.append(Book(result[0], result[1], result[2]))        
+            books.append(Book(title=result[0], author=result[1], available=result[2]))        
         return books
     except Exception as e:
         logger.error(msg=f"Issue while searching for book by title {
@@ -122,6 +122,7 @@ def get_book_by_title(title : str) -> list[Book] | None:
 
 def get_books_for_checkout(title: str) -> list[str] | None:
     con: sqlite3.Connection = sqlite3.connect(LIBRARY)
+    logger.debug(f"Getting books for checkout: {title}")
     try:
         sql: str = f"select title, author, available from books where upper(title) \
             like upper('%{title}%') and available = 'Y'"
@@ -137,6 +138,7 @@ def get_books_for_checkout(title: str) -> list[str] | None:
 
 def get_book_by_author(author: str) -> list[Book] | None:
     books: list[Book] = []
+    logger.debug(f"Getting books by author: {author}")
     con: sqlite3.Connection = sqlite3.connect(LIBRARY)
     try:
         sql: str = f"select title, author, available from books where \
@@ -144,7 +146,7 @@ def get_book_by_author(author: str) -> list[Book] | None:
         cur: sqlite3.Cursor = con.execute(sql)
         results: list[str] = cur.fetchall()
         for result in results:
-            books.append(Book(result[0], result[1], result[2]))        
+            books.append(Book(title=result[0], author=result[1], available=result[2]))
         return books
     except Exception as e:
         logger.error(msg=f"Issue while searching for book by author {
@@ -155,6 +157,7 @@ def get_book_by_author(author: str) -> list[Book] | None:
 
 def get_book_by_availability(availability: str) -> list[Book] | None:
     books: list[Book] = []
+    logger.debug(f"Getting books by availability: {availability}")
     con: sqlite3.Connection = sqlite3.connect(LIBRARY)
     try:
         sql: str = f"select title, author, available from books where \
@@ -162,7 +165,7 @@ def get_book_by_availability(availability: str) -> list[Book] | None:
         cur: sqlite3.Cursor = con.execute(sql)
         results: list[str] = cur.fetchall()
         for result in results:
-            books.append(Book(result[0], result[1], result[2]))        
+            books.append(Book(title=result[0], author=result[1], available=result[2]))        
         return books
     except Exception as e:
         logger.error(msg=f"Issue while searching for book by availability {
@@ -173,13 +176,14 @@ def get_book_by_availability(availability: str) -> list[Book] | None:
 
 def get_all_books() -> list[Book] | None:
     books: list[Book] = []
+    logger.debug("Getting all books")
     con: sqlite3.Connection = sqlite3.connect(LIBRARY)
     try:
         sql = "select title, author, available from books;"
         cur: sqlite3.Cursor = con.execute(sql)
         results: list[str] = cur.fetchall()
         for result in results:
-            books.append(Book(result[0], result[1], result[2]))
+            books.append(Book(title=result[0], author=result[1], available=result[2]))
         return books
     except Exception as e:
         logger.error(msg=f"Issue getting all books from database: {repr(e)}")

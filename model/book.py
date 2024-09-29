@@ -1,20 +1,12 @@
 import shutil
+from pydantic import BaseModel
 from typing import override
 
 
-class Book:
-
-    def __init__(self, title: str, author: str, available: str) -> None:
-        self.title = title
-        self.author = author
-        self.available = available
-
-# Validate if the data is clean and does not already exist in the database
-    def validate(self):
-        pass
-
-    def checkout(self):
-        pass
+class Book(BaseModel):
+    title: str
+    author: str
+    available: str
 
     @override
     def __repr__(self) -> str:
@@ -28,5 +20,4 @@ class Book:
         while term_size.columns > len(output + self.available):
             output += " "
         output += self.available
-
         return output

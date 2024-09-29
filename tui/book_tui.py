@@ -69,7 +69,7 @@ def print_add_book_dir() -> None:
     title: str = input("BOOK TITLE: ")
     author: str = input("AUTHOR: ")
     available: str = input("AVAILABILITY (Y/N): ")
-    new_book: Book = Book(title, author, available)
+    new_book: Book = Book(title=title, author=author, available=available)
     if book_db.add_book(book=new_book):
         print("BOOK ADDED SUCCESSFULLY")
         logger.info(msg=f"Book added by user: {title}")
