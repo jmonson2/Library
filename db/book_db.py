@@ -9,6 +9,7 @@ logger: logging.Logger = logging.getLogger(name = __name__)
 
 def add_book(book: Book) -> bool:
     time: datetime = datetime.now()
+    logger.info(f"Adding book: {repr(book)}")
     con: sqlite3.Connection= sqlite3.connect(LIBRARY)
     try:
         sql = "insert into books (title, author, date_created, available) \
@@ -20,7 +21,6 @@ def add_book(book: Book) -> bool:
         return True
     except Exception as e:
         con.rollback()
-        print("BOOK ADDED UNSUCCESSFULLY")
         logger.error(msg=f"Issue adding book to database: {repr(e)}")
         return False
     finally:
@@ -35,17 +35,16 @@ def check_out_book(title: str | None) -> bool:
         '{time.strftime(format = "%d/%m/%Y %H:%M:%S")}' where upper(title) =  \
             upper('{title}') and available = 'Y';"
         update_count: int = con.execute(sql).rowcount
-        if update_count > 0:
-            print("BOOK CHECKED OUT")
-            logger.info(msg=f"Book checked out: {title}")
-        elif update_count == 0:
-            print("BOOK NOT FOUND")
         con.commit()
-        return True
+        if update_count > 0:
+            logger.info(msg=f"Book checked out: {title}")
+            return True
+        elif update_count == 0:
+            logger.info(msg=f"Book not checked out: {title}")
+        return False
     except Exception as e:
         con.rollback()
         logger.error(msg=f"Issue checking out book {title}: {repr(e)}")
-        print("ERROR WHILE CHECKING OUT BOOK")
         return False
     finally:
         con.close()
@@ -59,16 +58,14 @@ def check_in_book(title: str | None) -> bool:
             upper('{title}');"
         update_count: int = con.execute(sql).rowcount
         if update_count > 0:
-            print("BOOK CHECKED IN")
             logger.info(msg=f"Book checked in: {title}")
         elif update_count == 0:
-            print("BOOK NOT FOUND")
+            logger.info(msg=f"Book not checked in: {title}")
         con.commit()
         return True
     except Exception as e:
         con.rollback()
         logger.error(msg=f"Issue checking in book {title}: {repr(e)}")
-        print("ERROR CHECKING IN BOOK")
         return False
     finally:
         con.close()

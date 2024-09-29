@@ -1,1 +1,1 @@
-python3 -m tui.main_tui.py
+python3 -m tui.main_tui
