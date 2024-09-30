@@ -44,7 +44,7 @@ def print_all_books() -> None:
     print(format_output(content=("TITLE", "AUTHOR", "AVAILABLE")))
     if books:
         for book in books:
-            print(book.format())
+            print(book.tui_format())
     _ = input("PRESS ENTER TO CONTINUE")
 
 
@@ -90,7 +90,7 @@ def print_check_out_book()-> None:
             book_dict.update({str(i + 1): books[i][0]})
             print(f"{i + 1}. {book_dict.get(str(i + 1))}")
         book: str = input("BOOK TO CHECKOUT: ")
-        if book_db.check_out_book(title=book_dict.get(book)):
+        if book_db.checkout_book_by_title(title=book_dict.get(book)):
             print("BOOK CHECKED IN")
         else:
             print("BOOK CHECKED OUT")
@@ -110,7 +110,7 @@ def print_check_in_book() -> None:
             book_dict.update({str(i + 1): books[i][0]})
             print(f"{i + 1}. {book_dict.get(str(i + 1))}")
         book: str = input("BOOK TO CHECK-IN: ")
-        if book_db.check_in_book(title=book_dict.get(book)):
+        if book_db.checkin_book_by_title(title=book_dict.get(book)):
             print("BOOK CHECKED IN")
         else:
             print("BOOK NOT CHECKED IN")
@@ -142,7 +142,7 @@ def print_find_book_by_title():
     if books:
         print(format_output(content=("TITLE", "AUTHOR", "AVAILABLE")))
         for book in books:
-            print(book.format())
+            print(book.tui_format())
     else:
         print("NO BOOKS FOUND")
     _ = input()
@@ -157,7 +157,7 @@ def print_find_book_by_author():
     if books:
         print(format_output(content=("TITLE", "AUTHOR", "AVAILABLE")))
         for book in books:
-            print(book.format())
+            print(book.tui_format())
     else:
         print("NO BOOKS FOUND")
     _ = input()
@@ -172,7 +172,7 @@ def print_find_book_by_availability():
     if books:
         print(format_output(content=("TITLE", "AUTHOR", "AVAILABLE")))
         for book in books:
-            print(book.format())
+            print(book.tui_format())
     else:
         print("NO BOOKS FOUND")
     _= input()

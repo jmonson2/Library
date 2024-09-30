@@ -3,11 +3,12 @@ import shutil
 from pydantic import BaseModel
 
 class Book(BaseModel):
+    id: int | None = None
     title: str
     author: str
     available: str
 
-    def format(self) -> str:
+    def tui_format(self) -> str:
         term_size: terminal_size = shutil.get_terminal_size(fallback = (80, 20))
         output: str = self.title
 
