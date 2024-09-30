@@ -9,7 +9,6 @@ logger: logging.Logger = logging.getLogger(name = __name__)
 
 def add_book(book: Book) -> bool:
     time: datetime = datetime.now()
-    logger.info(f"Adding book: {repr(book)}")
     con: sqlite3.Connection= sqlite3.connect(LIBRARY)
     try:
         sql = "insert into books (title, author, date_created, available) \
@@ -18,6 +17,7 @@ def add_book(book: Book) -> bool:
                 format = "%d/%m/%Y %H:%M:%S"), book.available)
         _ = con.execute(sql, data)
         con.commit()
+        logger.info(f"Book added: {repr(book)}")
         return True
     except Exception as e:
         con.rollback()
