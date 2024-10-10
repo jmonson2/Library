@@ -3,4 +3,6 @@ Python Library Back-End
 
 This makes use of a sqlite database to store books and their availability. This is a work in progress.
 
-Currently, only a simple text user interface is available. I will be adding user management to enable better tracking for books that have been checked out as well as an API module to allow for easy web integrations.
+This application exposes an API to allow users perform basic library functions. A TUI is also included.
+
+Books can be loaded through the API, TUI, as well as an ETL that takes CSV files as input.
