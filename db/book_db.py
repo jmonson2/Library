@@ -1,16 +1,16 @@
 import sqlite3
-import os
 import logging
 from datetime import datetime
 from model.book import Book
+from util.paths import Paths
 
 class Book_DB:
     def __init__(self) -> None:
         self.logger: logging.Logger = logging.getLogger(name = __name__)
-        self.db_filename = os.getcwd() + "/sqlite/library.db"
+        self.paths: Paths = Paths()
     def add_book(self, book: Book) -> bool:
         time: datetime = datetime.now()
-        con: sqlite3.Connection= sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection= sqlite3.connect(self.paths.db_file_path)
         try:
             sql = "insert into books (title, author, date_created, available) \
                 values (?, ?, ?, ?);"
@@ -30,7 +30,7 @@ class Book_DB:
 
     def checkout_book(self, id: int | None) -> bool:
         time: datetime = datetime.now()
-        con: sqlite3.Connection = sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         try:
             sql: str = f"update books set available = 'N', check_out_date = \
             '{time.strftime(format = "%d/%m/%Y %H:%M:%S")}' where id =  \
@@ -53,7 +53,7 @@ class Book_DB:
 
     def checkout_book_by_title(self, title: str | None) -> bool:
         time: datetime = datetime.now()
-        con: sqlite3.Connection = sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         try:
             sql: str = f"update books set available = 'N', check_out_date = \
             '{time.strftime(format = "%d/%m/%Y %H:%M:%S")}' where upper(title) =  \
@@ -75,7 +75,7 @@ class Book_DB:
 
     def checkin_book_by_title(self, title: str | None) -> bool:
         time: datetime = datetime.now()
-        con: sqlite3.Connection = sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         try:
             sql: str = f"update books set available = 'Y', check_in_date = \
             '{time.strftime(format = "%d/%m/%Y %H:%M:%S")}' where upper(title) =  \
@@ -96,7 +96,7 @@ class Book_DB:
 
     def checkin_book(self, id: int | None) -> bool:
         time: datetime = datetime.now()
-        con: sqlite3.Connection = sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         try:
             sql: str = f"update books set available = 'Y', check_in_date = \
             '{time.strftime(format = "%d/%m/%Y %H:%M:%S")}' where id =  \
@@ -116,7 +116,7 @@ class Book_DB:
             con.close()
 
     def get_book_by_title_for_checkout(self, title: str)  -> list[str] | None:
-        con: sqlite3.Connection = sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         try:
             sql: str = f"select title from books where upper(title) \
                 like upper('%{title}%') and available = 'Y'"
@@ -131,7 +131,7 @@ class Book_DB:
             con.close()
 
     def get_book_by_title_for_check_in(self, title: str) -> list[str] | None:
-        con: sqlite3.Connection = sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         try:
             sql: str = f"select title from books where upper(title) \
                 like upper('%{title}%') and available = 'N'"
@@ -147,7 +147,7 @@ class Book_DB:
 
     def get_book_by_title(self, title : str) -> list[Book] | None:
         books: list[Book] = []
-        con: sqlite3.Connection = sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         try:
             sql: str = f"select id, title, author, available from books where upper(title) \
                 like upper('%{title}%')"
@@ -163,7 +163,7 @@ class Book_DB:
             con.close()
 
     def get_books_for_checkout(self, title: str) -> list[str] | None:
-        con: sqlite3.Connection = sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         self.logger.debug(f"Getting books for checkout: {title}")
         try:
             sql: str = f"select title, author, available from books where upper(title) \
@@ -181,7 +181,7 @@ class Book_DB:
     def get_book_by_author(self, author: str) -> list[Book] | None:
         books: list[Book] = []
         self.logger.debug(f"Getting books by author: {author}")
-        con: sqlite3.Connection = sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         try:
             sql: str = f"select id, title, author, available from books where \
             upper(author) like upper('%{author}%')"
@@ -200,7 +200,7 @@ class Book_DB:
     def get_book_by_availability(self, availability: str) -> list[Book] | None:
         books: list[Book] = []
         self.logger.debug(f"Getting books by availability: {availability}")
-        con: sqlite3.Connection = sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         try:
             sql: str = f"select id, title, author, available from books where \
             upper(available) like upper('%{availability}%')"
@@ -219,7 +219,7 @@ class Book_DB:
     def get_all_books(self) -> list[Book] | None:
         books: list[Book] = []
         self.logger.debug("Getting all books")
-        con: sqlite3.Connection = sqlite3.connect(self.db_filename)
+        con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         try:
             sql = "select id, title, author, available from books;"
             cur: sqlite3.Cursor = con.execute(sql)
