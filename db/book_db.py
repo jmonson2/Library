@@ -4,7 +4,7 @@ from datetime import datetime
 from model.book import Book
 from util.paths import Paths
 
-class Book_DB:
+class BookDB:
     def __init__(self) -> None:
         self.logger: logging.Logger = logging.getLogger(name = __name__)
         self.paths: Paths = Paths()

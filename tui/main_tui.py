@@ -2,7 +2,7 @@ import shutil
 import os
 import logging
 from typing import Literal, override
-from tui.book_tui import Book_Tui
+from tui.book_tui import BookTui
 from tui.tui import Tui
 from util.initialize import Initialize
 
@@ -12,17 +12,17 @@ running: bool = True
 def tui() -> Literal[0]:
     initializer: Initialize = Initialize()
     if initializer.initialize():
-        main_tui: Main_Tui = Main_Tui()
+        main_tui: MainTui = MainTui()
         while running:
             _ = os.system(command="clear")
             main_tui.print_dir()
             _ = os.system(command="clear")
     return 0
 
-class Main_Tui(Tui):
+class MainTui(Tui):
     def __init__(self) -> None:
         self.logger: logging.Logger = logging.getLogger(name=__name__)
-        self.book_tui: Book_Tui = Book_Tui()
+        self.book_tui: BookTui = BookTui()
         self.dir_list: list[str] = ["BOOKS", "EXIT"]
         self.dir_dict: dict[str, str] = self.create_dir_dict()
         self.init_util: Initialize = Initialize()

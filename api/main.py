@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from model.book import Book
-from db.book_db import Book_DB
+from db.book_db import BookDB
 import logging
 
 logging.basicConfig(
@@ -13,7 +13,7 @@ logging.basicConfig(
     level=logging.DEBUG)
 
 app: FastAPI = FastAPI()
-book_db: Book_DB = Book_DB()
+book_db: BookDB = BookDB()
 
 
 @app.get("/")

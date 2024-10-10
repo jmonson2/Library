@@ -4,13 +4,13 @@ import logging
 import sys
 from typing import override
 from model.book import Book
-from db.book_db import Book_DB
+from db.book_db import BookDB
 from tui.tui import Tui
 
 
-class Book_Tui(Tui):
+class BookTui(Tui):
     def __init__(self) -> None:
-        self.book_db: Book_DB = Book_DB()
+        self.book_db: BookDB = BookDB()
         self.logger: logging.Logger = logging.getLogger(name=__name__)
         self.dir_name: str = "BOOK DIRECTORY"
         self.dir_list: list[str] = ["CHECKOUT BOOK", "CHECK-IN BOOK", "FIND BOOK", "LIST BOOKS",
