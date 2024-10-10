@@ -9,12 +9,14 @@ class Initialize:
         self.paths = Paths()
         self.logger: logging.Logger = logging.getLogger(name=__name__)
 
+
     def initialize(self) -> bool:
         return (
             self.__initialize_logs() and
             self.__initialize_database() and
             self.__initialize_imports()
         )
+
 
     def __initialize_database(self) -> bool:
         success: bool = False
@@ -42,6 +44,7 @@ class Initialize:
             con.close()
             return success
 
+
     def __initialize_logs(self) -> bool:
         success: bool = False
         try:
@@ -62,6 +65,7 @@ class Initialize:
             _ = input()
         finally:
             return success
+
 
     def __initialize_imports(self) -> bool:
         success: bool = False

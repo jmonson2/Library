@@ -15,6 +15,7 @@ class CsvETL(AbstractETL):
         self.__list_dict_books: list[dict[str, str]] = []
         self.__books: list[Book] = []
 
+
     @override
     def extract(self) -> None:
         for csv_path in self.__get_fd_for_import():
@@ -22,6 +23,7 @@ class CsvETL(AbstractETL):
                 reader = csv.DictReader(csv_file)
                 for row in reader:
                     self.__list_dict_books.append(row)
+
 
     @override
     def transform(self) -> None:
@@ -34,10 +36,12 @@ class CsvETL(AbstractETL):
                 )
             )
 
+
     @override
     def load(self) -> None:
         for book in self.__books:
             _ = self.__book_db.add_book(book)
+
 
     @override
     def run(self) -> None:
@@ -45,6 +49,7 @@ class CsvETL(AbstractETL):
         self.transform()
         self.load()
         
+
     def __get_fd_for_import(self) -> set[Path]:
         csv_filenames: set[Path] = set()
         csv_files = Path.glob(self.__paths.import_path, "*.csv")
@@ -53,5 +58,3 @@ class CsvETL(AbstractETL):
         return csv_filenames
 
 
-test = CsvETL()
-test.run()

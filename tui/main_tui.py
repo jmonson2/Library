@@ -20,6 +20,7 @@ def tui() -> Literal[0]:
     return 0
 
 class MainTui(Tui):
+
     def __init__(self) -> None:
         self.logger: logging.Logger = logging.getLogger(name=__name__)
         self.book_tui: BookTui = BookTui()
@@ -36,6 +37,7 @@ class MainTui(Tui):
         for i in range(0, len(self.dir_list)):
             dir_dict.update({str(i + 1): self.dir_list[i]})
         return dir_dict
+
 
     @override
     def print_header(self, content: str) -> None:

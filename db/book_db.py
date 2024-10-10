@@ -5,9 +5,12 @@ from model.book import Book
 from util.paths import Paths
 
 class BookDB:
+
     def __init__(self) -> None:
         self.logger: logging.Logger = logging.getLogger(name = __name__)
         self.paths: Paths = Paths()
+
+
     def add_book(self, book: Book) -> bool:
         time: datetime = datetime.now()
         con: sqlite3.Connection= sqlite3.connect(self.paths.db_file_path)
@@ -73,6 +76,7 @@ class BookDB:
         finally:
             con.close()
 
+
     def checkin_book_by_title(self, title: str | None) -> bool:
         time: datetime = datetime.now()
         con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
@@ -93,6 +97,7 @@ class BookDB:
             return False
         finally:
             con.close()
+
 
     def checkin_book(self, id: int | None) -> bool:
         time: datetime = datetime.now()
@@ -115,6 +120,7 @@ class BookDB:
         finally:
             con.close()
 
+
     def get_book_by_title_for_checkout(self, title: str)  -> list[str] | None:
         con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
         try:
@@ -123,12 +129,12 @@ class BookDB:
             cur: sqlite3.Cursor = con.execute(sql)
             books: list[str] = cur.fetchall()
             return books
-
         except Exception as e:
             self.logger.error(msg=f"Issue while searching for book by title {
                         title}: {repr(e)}")
         finally:
             con.close()
+
 
     def get_book_by_title_for_check_in(self, title: str) -> list[str] | None:
         con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
@@ -138,12 +144,12 @@ class BookDB:
             cur: sqlite3.Cursor = con.execute(sql)
             books: list[str] = cur.fetchall()
             return books
-
         except Exception as e:
             self.logger.error(msg=f"Issue while searching for book by title {
                         title}: {repr(e)}")
         finally:
             con.close()
+
 
     def get_book_by_title(self, title : str) -> list[Book] | None:
         books: list[Book] = []
@@ -161,6 +167,7 @@ class BookDB:
                         title}: {repr(e)}")
         finally:
             con.close()
+
 
     def get_books_for_checkout(self, title: str) -> list[str] | None:
         con: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)

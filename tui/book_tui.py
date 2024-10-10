@@ -9,6 +9,7 @@ from tui.tui import Tui
 
 
 class BookTui(Tui):
+
     def __init__(self) -> None:
         self.book_db: BookDB = BookDB()
         self.logger: logging.Logger = logging.getLogger(name=__name__)
@@ -16,6 +17,7 @@ class BookTui(Tui):
         self.dir_list: list[str] = ["CHECKOUT BOOK", "CHECK-IN BOOK", "FIND BOOK", "LIST BOOKS",
                     "ADD BOOK", "MAIN DIRECTORY", "EXIT"]
         self.dir_dict = self.create_dir_dict()
+
 
     @override
     def create_dir_dict(self) -> dict[str, str]:
