@@ -10,11 +10,14 @@ class Initialize:
         self.logger: logging.Logger = logging.getLogger(name=__name__)
 
     def initialize(self) -> bool:
-        return self.initialize_logs() and self.initialize_database()
+        return (
+            self.__initialize_logs() and
+            self.__initialize_database() and
+            self.__initialize_imports()
+        )
 
-    def initialize_database(self) -> bool:
+    def __initialize_database(self) -> bool:
         success: bool = False
-        print(self.paths.db_file_path)
         if Path.exists(self.paths.db_file_path):
             self.logger.debug(f"Database file exists in {self.paths.db_file_path}")
             success = True
@@ -29,17 +32,18 @@ class Initialize:
         try:
             _ = con.execute(create_books_sql)
             con.commit()
-            self.logger.info(msg="Database Initialized")
+            self.logger.info(f"sqlite database created in {self.paths.db_file_path}")
             success = True
         except Exception as e:
             con.rollback()
             Path.unlink(self.paths.db_file_path)
-            self.logger.error(msg=f"Failed to Intialize Database: {repr(e)}")
+            self.logger.error(msg=f"Failed to Intialize Database in {self.paths.db_file_path}: {repr(e)}")
         finally:
             con.close()
             return success
 
-    def initialize_logs(self) -> bool:
+    def __initialize_logs(self) -> bool:
+        success: bool = False
         try:
             if not Path.exists(self.paths.log_path):
                 Path.mkdir(self=self.paths.log_path, parents=True)
@@ -51,7 +55,26 @@ class Initialize:
                 style="{",
                 datefmt="%Y-%m-%d %H:%M",
                 level=logging.DEBUG)
-            return True
+            success = True
         except Exception as e:
-            print(repr(e))
-            return False
+            success = False
+            print(f"Error in intializing logs {repr(e)}")
+            _ = input()
+        finally:
+            return success
+
+    def __initialize_imports(self) -> bool:
+        success: bool = False
+        try:
+            if not Path.exists(self.paths.import_path):
+                Path.mkdir(self=self.paths.import_path, parents=True)
+                self.logger.info(f"created path for CSV imports in {self.paths.import_path}")
+                success = True
+            else:
+                success = True
+        except Exception as e:
+            success = False
+            self.logger.error(f"Failed to create imports folder in {self.paths.import_path}: {repr(e)}")
+        finally:
+            return success
+
