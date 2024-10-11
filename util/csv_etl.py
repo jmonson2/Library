@@ -5,12 +5,13 @@ from pathlib import Path
 from model.book import Book
 from db.book_db import BookDB
 import csv
+import time
 
 class CsvETL(AbstractETL):
 
     def __init__(self) -> None:
         self.__paths = Paths()
-        self.__files: set[Path] = self.__get_fd_for_import()
+        self.__files: set[Path] = self.get_fd_for_import()
         self.__book_db: BookDB = BookDB()
         self.__list_dict_books: list[dict[str, str]] = []
         self.__books: list[Book] = []
@@ -18,7 +19,7 @@ class CsvETL(AbstractETL):
 
     @override
     def extract(self) -> None:
-        for csv_path in self.__get_fd_for_import():
+        for csv_path in self.__files:
             with open(csv_path, newline="", encoding="utf-8-sig") as csv_file:
                 reader = csv.DictReader(csv_file)
                 for row in reader:
@@ -48,13 +49,26 @@ class CsvETL(AbstractETL):
         self.extract()
         self.transform()
         self.load()
-        
+        self.move_completed_files()
 
-    def __get_fd_for_import(self) -> set[Path]:
+
+    def get_fd_for_import(self) -> set[Path]:
         csv_filenames: set[Path] = set()
         csv_files = Path.glob(self.__paths.import_path, "*.csv")
         for csv_file in csv_files:
             csv_filenames.add(csv_file)
         return csv_filenames
 
+
+    def move_completed_files(self) -> None:
+        for file in self.__files:
+            _ = file.rename(self.__paths.import_completed_path.joinpath(file.name))
+
+
+# Loop to listen for files
+while True:
+    csv_etl: CsvETL = CsvETL()
+    if csv_etl.get_fd_for_import():
+        csv_etl.run()
+    time.sleep(5)
 

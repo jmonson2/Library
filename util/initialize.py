@@ -14,7 +14,8 @@ class Initialize:
         return (
             self.__initialize_logs() and
             self.__initialize_database() and
-            self.__initialize_imports()
+            self.__initialize_imports() and
+            self.__initialize_completed_imports()
         )
 
 
@@ -72,13 +73,29 @@ class Initialize:
         try:
             if not Path.exists(self.paths.import_path):
                 Path.mkdir(self=self.paths.import_path, parents=True)
-                self.logger.info(f"created path for CSV imports in {self.paths.import_path}")
+                self.logger.info(f"created directory for CSV imports in {self.paths.import_path}")
                 success = True
             else:
                 success = True
         except Exception as e:
             success = False
-            self.logger.error(f"Failed to create imports folder in {self.paths.import_path}: {repr(e)}")
+            self.logger.error(f"Failed to create imports directory in {self.paths.import_path}: {repr(e)}")
+        finally:
+            return success
+    
+
+    def __initialize_completed_imports(self) -> bool:
+        success: bool = False
+        try:
+            if not Path.exists(self.paths.import_completed_path):
+                Path.mkdir(self=self.paths.import_completed_path, parents=True)
+                self.logger.info(f"created directory for CSV imports in {self.paths.import_completed_path}")
+                success = True
+            else:
+                success = True
+        except Exception as e:
+            success = False
+            self.logger.error(f"Failed to create completed imports directory in {self.paths.import_completed_path}: {repr(e)}")
         finally:
             return success
 
