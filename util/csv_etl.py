@@ -29,19 +29,19 @@ class CsvETL(AbstractETL):
     @override
     def transform(self) -> None:
         for b_dict in self.__list_dict_books:
-            self.__books.append(
-                Book(
-                     title=b_dict.get("Title"),
-                     author=b_dict.get("Author"),
-                     available=b_dict.get("Available")
+            if (title := b_dict.get("Title")) and (author := b_dict.get("Author")) and (available := b_dict.get("Available")):
+                self.__books.append(
+                    Book(
+                        title=title,
+                        author=author,
+                        available=available
+                    )
                 )
-            )
 
 
     @override
     def load(self) -> None:
-        for book in self.__books:
-            _ = self.__book_db.add_book(book)
+        _ = self.__book_db.add_books(self.__books)
 
 
     @override

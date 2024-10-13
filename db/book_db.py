@@ -1,6 +1,7 @@
 import sqlite3
 import logging
 from datetime import datetime
+
 from model.book import Book
 from util.paths import Paths
 
@@ -9,6 +10,24 @@ class BookDB:
     def __init__(self) -> None:
         self.logger: logging.Logger = logging.getLogger(name = __name__)
         self.paths: Paths = Paths()
+
+
+    def add_books(self, books: list[Book]) -> bool:
+        conn: sqlite3.Connection = sqlite3.connect(self.paths.db_file_path)
+        cursor: sqlite3.Cursor = conn.cursor()
+        try:
+            cursor.executemany(
+                "insert into books (title, author, date_created, available) values (?, ?, ?, ?);",
+                [(book.title, book.author, datetime.now().strftime("%d/%m/%Y %H:%M:%S"), book.available) for book in books]
+            )
+            conn.commit()
+            return True
+        except Exception as e:
+            conn.rollback()
+            self.logger.error(f"Issue adding books to database: {repr(e)}")
+            return False
+        finally:
+            conn.close()
 
 
     def add_book(self, book: Book) -> bool:
