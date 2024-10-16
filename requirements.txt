@@ -1,1 +1,2 @@
 fastapi[standard]
+xdg_base_dirs
